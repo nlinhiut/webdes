@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Giới thiệu</title>
+        <meta charset="utf-8">
+    </head>
+<body>
+<script>
+let fullName = "Nguyen Thi Ngoc Linh";
+let studentId = "27A4043310";
+//chuyển sang chữ thường
+let fullnamelower = fullName.toLocaleLowerCase ();
+let studentidlower = studentId.toLocaleLowerCase ();
+//tạo email
+let arr = fullnamelower.split(" "); //tách tên
+let lastName = arr[3]; 
+let email = lastName + arr[0][0] + arr[1][0] + arr[2][0] + "." + studentidlower + "@hvnh.edu.vn";
+
+//msv
+let course = studentId[0] + studentId[1]; //27
+let faculty = studentId[2]; //A
+
+//sum
+let sum = 0;
+    sum += Number(studentId[6]);
+    sum += Number(studentId[7]);
+    sum += Number(studentId[8]);
+    sum += Number(studentId[9]);
+
+//kq
+document.write("Email: " + email + "<br>");
+document.write("Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + faculty +", tổng 4 số cuối trong mã sinh viên là " + sum);
+</script>
+
+</body>
+</html>
