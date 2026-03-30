@@ -1,43 +1,131 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Giới thiệu</title>
-        <meta charset="utf-8">
-    </head>
+<head>
+<meta charset="UTF-8">
+<title>Tạo Email Sinh Viên</title>
+
+<style>
+  body {
+    font-family: Arial;
+    background: #f4f6f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+
+  .box {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  button {
+    width: 100%;
+    padding: 10px;
+    background: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #003d82;
+  }
+
+  #result {
+    margin-top: 15px;
+    line-height: 1.6;
+  }
+</style>
+
+</head>
+
 <body>
-    <p id="kq"></p>
+
+<div class="box">
+  <h2>Tạo Email HVNH</h2>
+
+  <input type="text" id="fullName" placeholder="Nhập họ tên (không dấu)">
+  <input type="text" id="studentId" placeholder="Nhập mã sinh viên">
+
+  <button onclick="generate()">Tạo kết quả</button>
+
+  <div id="result"></div>
+</div>
+
 <script>
-let fullName = "Nguyen Thi Ngoc Linh";
-let studentId = "27A4043310";
-//chuyển sang chữ thường
-let fullnamelower = fullName.toLocaleLowerCase ();
-let studentidlower = studentId.toLocaleLowerCase ();
-//tạo email
-let arr = fullnamelower.split(" "); //tách tên
-let lastName = arr[3]; 
-let email = lastName + arr[0][0] + arr[1][0] + arr[2][0] + "." + studentidlower + "@hvnh.edu.vn";
 
-//msv
-let course = studentId[0] + studentId[1]; //27
-let falcutyCode = studentId[3] + studentId[4] + studentId[5]; //404
-let falcuttyName = " ";
-if (falcutyCode == "404") {
-    falcuttyName = " Khoa Công nghệ thông ti & Kinh Tế Số";
-} 
+function generate() {
+  let fullName = document.getElementById("fullName").value.trim();
+  let studentId = document.getElementById("studentId").value.trim();
 
+  // ===== TÁCH TÊN =====
+  let nameParts = fullName.split(" ");
+  let firstName = nameParts[nameParts.length - 1];
 
-//sum
-let sum = 0;
-    sum += Number(studentId[6]);
-    sum += Number(studentId[7]);
-    sum += Number(studentId[8]);
-    sum += Number(studentId[9]);
+  // lấy chữ cái đầu của họ + toàn bộ tên đệm bằng for
+  let initials = "";
+  for (let i = 0; i < nameParts.length - 1; i++) {
+    initials += nameParts[i][0];
+  }
 
-//kq
+  // ===== EMAIL =====
+  let email = (firstName + initials + "." + studentId).toLowerCase() + "@hvnh.edu.vn";
 
-document.getElementById("kq").innerHTML = 
-"Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + falcuttyName +", tổng 4 số cuối trong mã sinh viên là " + sum + "<br>" +
-"Email: " + email;
+  // ===== KHÓA =====
+  let coursePeriod = studentId.substring(0,2);
+
+  // ===== NGÀNH (3 số sau A) =====
+  let majorCode = studentId.substring(3,6);
+  let faculty = "";
+
+  switch (majorCode) {
+    case "404": faculty = "CNTT & KTS"; break;
+    case "408": faculty = "KHDL"; break;
+    case "401": faculty = "TC-NH"; break;
+    case "403": faculty = "QTKD"; break;
+    case "405": faculty = "KDQT"; break;
+    case "407": faculty = "Kinh tế"; break;
+    case "406": faculty = "Luật"; break;
+    case "751": faculty = "Ngoại ngữ"; break;
+    case "402": faculty = "Kế toán - Kiểm toán"; break;
+    default: faculty = "Không xác định";
+  }
+
+  // ===== TỔNG 4 SỐ CUỐI =====
+  let lastFour = studentId.slice(-4);
+  let sum = 0;
+
+  for (let num of lastFour) {
+    sum += Number(num);
+  }
+
+  // ===== OUTPUT =====
+  document.getElementById("result").innerHTML =
+    "Xin chào <b>" + fullName + "</b><br>" +
+    "Bạn là sinh viên khóa <b>" + coursePeriod + "</b><br>" +
+    "Khoa: <b>" + faculty + "</b><br>" +
+    "Tổng 4 số cuối: <b>" + sum + "</b><br>" +
+    "Email: <b>" + email + "</b>";
+}
+
 </script>
 
 </body>
