@@ -5,6 +5,7 @@
         <meta charset="utf-8">
     </head>
 <body>
+    <p id="kq"></p>
 <script>
 let fullName = "Nguyen Thi Ngoc Linh";
 let studentId = "27A4043310";
@@ -28,8 +29,10 @@ let sum = 0;
     sum += Number(studentId[9]);
 
 //kq
-document.write("Email: " + email + "<br>");
-document.write("Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + faculty +", tổng 4 số cuối trong mã sinh viên là " + sum);
+
+document.getElementById("kq").innerHTML = 
+"Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + faculty +", tổng 4 số cuối trong mã sinh viên là " + sum + "<br>" +
+"Email: " + email;
 </script>
 
 </body>
