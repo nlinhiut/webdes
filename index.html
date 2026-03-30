@@ -19,7 +19,12 @@ let email = lastName + arr[0][0] + arr[1][0] + arr[2][0] + "." + studentidlower 
 
 //msv
 let course = studentId[0] + studentId[1]; //27
-let faculty = studentId[3] + studentId[4] + studentId[5]; //404
+let falcutyCode = studentId[3] + studentId[4] + studentId[5]; //404
+let falcuttyName = " ";
+if (falcutyCode == "404") {
+    falcuttyName = " Khoa Công nghệ thông ti & Kinh Tế Số";
+} 
+
 
 //sum
 let sum = 0;
@@ -31,7 +36,7 @@ let sum = 0;
 //kq
 
 document.getElementById("kq").innerHTML = 
-"Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + faculty +", tổng 4 số cuối trong mã sinh viên là " + sum + "<br>" +
+"Xin chào " + fullName + ", bạn là sinh viên khóa " + course +", khoa " + falcuttyName +", tổng 4 số cuối trong mã sinh viên là " + sum + "<br>" +
 "Email: " + email;
 </script>
 
