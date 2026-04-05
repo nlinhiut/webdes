@@ -5,80 +5,92 @@ function removeVietnameseTones(str) {
               .replace(/đ/g, 'd').replace(/Đ/g, 'D');
 }
 
+// ===== CLASS SINH VIÊN =====
+class Student {
+    constructor(fullName, studentId) {
+        this.fullName = String(fullName).replace(/\s*\(.*?\)\s*/g, "").trim(); // attribute
+        this.studentId = String(studentId).trim(); // attribute
+    }
+
+    getEmail() {
+        let nameParts = this.fullName.split(" ");
+        let firstName = nameParts[nameParts.length - 1];
+
+        let initials = "";
+        for (let i = 0; i < nameParts.length - 1; i++) {
+            if (nameParts[i][0]) initials += nameParts[i][0];
+        }
+
+        let cleanFirstName = removeVietnameseTones(firstName);
+        let cleanInitials = removeVietnameseTones(initials);
+
+        return (cleanFirstName + cleanInitials + "." + this.studentId).toLowerCase() + "@hvnh.edu.vn";
+    }
+
+    getCourse() {
+        return this.studentId.substring(0, 2);
+    }
+
+    getFaculty() {
+        let majorCode = this.studentId.substring(3, 6);
+
+        switch (majorCode) {
+            case "404": return "CNTT & KTS";
+            case "408": return "KHDL";
+            case "401": return "TC-NH";
+            case "403": return "QTKD";
+            case "405": return "KDQT";
+            case "407": return "Kinh tế";
+            case "406": return "Luật";
+            case "751": return "Ngoại ngữ";
+            case "402": return "Kế toán - Kiểm toán";
+            default: return "Không xác định";
+        }
+    }
+
+    getSumLast4() {
+        let lastFour = this.studentId.slice(-4);
+        let sum = 0;
+
+        for (let i = 0; i < lastFour.length; i++) {
+            if (!isNaN(lastFour[i])) sum += Number(lastFour[i]);
+        }
+
+        return sum;
+    }
+}
+// ===== ĐỌC EXCEL =====
 fetch("data.xlsx")
 .then(res => res.arrayBuffer())
 .then(data => {
     let workbook = XLSX.read(data, { type: "array" });
     let sheet = workbook.Sheets[workbook.SheetNames[0]];
     let rows = XLSX.utils.sheet_to_json(sheet);
-    console.log(rows);
 
     let html = "";
 
     for (let i = 0; i < rows.length; i++) {
         let keys = Object.keys(rows[i]);
-        
-        // Lấy dữ liệu thô từ Excel
-        let rawName = rows[i][keys[2]]; // Cột Họ tên
-        let rawId = rows[i][keys[1]];   // Cột Mã SV
 
-        // KT: Nếu dòng trống thì bỏ qua để không bị lỗi
+        let rawName = rows[i][keys[2]];
+        let rawId = rows[i][keys[1]];
+
         if (!rawName || !rawId) continue;
 
-        // Xóa nội dung trong ngoặc (LT) và khoảng trắng thừa
-        let fullName = String(rawName).replace(/\s*\(.*?\)\s*/g, "").trim();
-        let studentId = String(rawId).trim();
+        // mỗi dòng là 1 sinh viên
+        let sv = new Student(rawName, rawId);
 
-        // Tách tên và lấy chữ cái đầu
-        let nameParts = fullName.split(" ");
-        let firstName = nameParts[nameParts.length - 1];
-
-        let initials = "";
-        for (let j = 0; j < nameParts.length - 1; j++) {
-            if (nameParts[j][0]) initials += nameParts[j][0];
-        }
-
-        // Lọc dấu họ tên
-        let cleanFirstName = removeVietnameseTones(firstName);
-        let cleanInitials = removeVietnameseTones(initials);
-        let email = (cleanFirstName + cleanInitials + "." + studentId).toLowerCase() + "@hvnh.edu.vn";
-
-        // Xử lý Khóa và Khoa
-        let coursePeriod = studentId.substring(0, 2);
-        let majorCode = studentId.substring(3, 6);
-        let faculty = "";
-
-        switch (majorCode) {
-            case "404": faculty = "CNTT & KTS"; break;
-            case "408": faculty = "KHDL"; break;
-            case "401": faculty = "TC-NH"; break;
-            case "403": faculty = "QTKD"; break;
-            case "405": faculty = "KDQT"; break;
-            case "407": faculty = "Kinh tế"; break;
-            case "406": faculty = "Luật"; break;
-            case "751": faculty = "Ngoại ngữ"; break;
-            case "402": faculty = "Kế toán - Kiểm toán"; break;
-            default: faculty = "Không xác định";
-        }
-
-        // Tính tổng 4 số cuối Mã SV
-        let lastFour = studentId.slice(-4);
-        let sum = 0;
-        for (let k = 0; k < lastFour.length; k++) {
-            if (!isNaN(lastFour[k])) sum += Number(lastFour[k]);
-        }
-
-        // IN RA BẢNG
         html += `
             <tr>
-                <td>${fullName}</td>
-                <td>${email}</td>
-                <td>${coursePeriod}</td>
-                <td>${faculty}</td>
-                <td>${sum}</td>
+                <td>${sv.fullName}</td>
+                <td>${sv.getEmail()}</td>
+                <td>${sv.getCourse()}</td>
+                <td>${sv.getFaculty()}</td>
+                <td>${sv.getSumLast4()}</td>
             </tr>
         `;
     }
+
     document.getElementById("tableBody").innerHTML = html;
 })
 .catch(err => console.error("Lỗi fetch dữ liệu:", err));
