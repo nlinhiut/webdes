@@ -8,12 +8,14 @@ function removeVietnameseTones(str) {
 // ===== CLASS SINH VIÊN =====
 class Student {
     constructor(fullName, studentId) {
-        this.fullName = String(fullName).replace(/\s*\(.*?\)\s*/g, "").trim(); 
-        this.studentId = String(studentId).trim();
+        this.fullName = String(fullName).trim(); 
+        this.studentId = String(studentId).trim(); 
     }
 
     getEmail() {
-        let nameParts = this.fullName.split(" ");
+        // xoá phần có (LT)
+        let name = this.fullName.replace(/\s*\(.*?\)\s*/g, "").trim();
+        let nameParts = name.split(" ");
         let firstName = nameParts[nameParts.length - 1];
 
         let initials = "";
@@ -74,7 +76,7 @@ fetch("data.xlsx")
 
         let rawName = rows[i][keys[2]];
         let rawId = rows[i][keys[1]];
-        // bỏ qua nếu thiếu tên hoặc mã sv
+        // bỏ qua dòng nếu thiếu tên hoặc mã sinh viên
         if (!rawName || !rawId) continue;
 
         // mỗi dòng là 1 sinh viên
